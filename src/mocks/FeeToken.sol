@@ -10,11 +10,19 @@ contract FeeToken is ERC20 {
         _mint(msg.sender, 1_000_000 ether);
     }
 
-    function _transfer(address from, address to, uint256 amount) internal override {
-        uint256 fee = (amount * FEE_BPS) / 10_000;
-        uint256 net = amount - fee;
-        super._transfer(from, to, net);
-        super._transfer(from, address(0xdead), fee);
+    function _update(
+        address from,
+        address to,
+        uint256 amount
+    ) internal override {
+        if (from != address(0) && to != address(0)) {
+            uint256 fee = (amount * FEE_BPS) / 10_000;
+            uint256 netAmount = amount - fee;
+
+            super._update(from, to, netAmount);
+            super._update(from, address(0xdead), fee);
+        } else {
+            super._update(from, to, amount);
+        }
     }
 }
-
