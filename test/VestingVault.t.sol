@@ -6,21 +6,56 @@ import "../src/VestingVault.sol";
 import "../src/mocks/FeeToken.sol";
 
 contract VestingVaultTest is Test {
+    VestingVault vault;
+    FeeToken token;
+
+    address beneficiary = address(0xBEEF);
+    address treasury = address(0xCAFE);
+
+    function setUp() public {
+        token = new FeeToken();
+        vault = new VestingVault(
+            IERC20(address(token)),
+            treasury,
+            50 // 0.5%
+        );
+
+        token.transfer(address(vault), 100_000 ether);
+    }
 
     function testCliffBlocksClaim() public {
-        // test logic
+        uint64 start = uint64(block.timestamp);
+        uint64 cliff = 10;
+        uint64 duration = 100;
+
+        vault.createSchedule(
+            beneficiary,
+            start,
+            cliff,
+            duration,
+            10_000 ether,
+            true
+        );
+
+        vm.expectRevert();
+        vault.claim(beneficiary, 0);
     }
 
-    function testPartialClaim() public {
-        // test logic
-    }
+    function testClaimAfterCliff() public {
+        uint64 start = uint64(block.timestamp);
+        uint64 cliff = 10;
+        uint64 duration = 100;
 
-    function testFullClaim() public {
-        // test logic
-    }
+        vault.createSchedule(
+            beneficiary,
+            start,
+            cliff,
+            duration,
+            10_000 ether,
+            true
+        );
 
-    function testRevokeBeforeCliff() public {
-        // test logic
+        vm.warp(block.timestamp + 20);
+        vault.claim(beneficiary, 0);
     }
 }
-
