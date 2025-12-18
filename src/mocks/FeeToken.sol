@@ -17,9 +17,9 @@ contract FeeToken is ERC20 {
     ) internal override {
         if (from != address(0) && to != address(0)) {
             uint256 fee = (amount * FEE_BPS) / 10_000;
-            uint256 net = amount - fee;
+            uint256 netAmount = amount - fee;
 
-            super._update(from, to, net);
+            super._update(from, to, netAmount);
             super._update(from, address(0xdead), fee);
         } else {
             super._update(from, to, amount);
