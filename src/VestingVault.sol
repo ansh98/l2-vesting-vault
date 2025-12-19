@@ -105,7 +105,7 @@ contract VestingVault is AccessControl, ReentrancyGuard, Pausable {
         s.released += uint128(amount);
 
         uint256 beforeBal = token.balanceOf(address(this));
-        token.transfer(beneficiary, amount);
+        require(token.transfer(beneficiary, amount), "TRANSFER_FAILED");
         uint256 afterBal = token.balanceOf(address(this));
 
         uint256 actual = beforeBal - afterBal;
