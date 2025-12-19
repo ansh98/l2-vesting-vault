@@ -28,6 +28,17 @@ contract VestingVaultTest is Test {
     /// ----------------------------
     /// TEST 1: Cliff blocks claim
     /// ----------------------------
+
+        vault = new VestingVault(
+            IERC20(address(token)),
+            treasury,
+            50 // 0.5%
+        );
+
+        token.transfer(address(vault), 100_000 ether);
+    }
+
+>>>>>>> 70163e4fbe84d4ecb2ccd910f854fd43327844e7
     function testCliffBlocksClaim() public {
         uint64 start = uint64(block.timestamp);
         uint64 cliff = 10;
@@ -46,9 +57,12 @@ contract VestingVaultTest is Test {
         vault.claim(beneficiary, 0);
     }
 
+<<<<<<< HEAD
     /// ----------------------------
     /// TEST 2: Claim works after cliff
     /// ----------------------------
+=======
+>>>>>>> 70163e4fbe84d4ecb2ccd910f854fd43327844e7
     function testClaimAfterCliff() public {
         uint64 start = uint64(block.timestamp);
         uint64 cliff = 10;
@@ -167,5 +181,8 @@ contract VestingVaultTest is Test {
         uint256 treasuryAfter = token.balanceOf(treasury);
 
         assertGt(treasuryAfter, treasuryBefore);
+=======
+        vault.claim(beneficiary, 0);
+>>>>>>> 70163e4fbe84d4ecb2ccd910f854fd43327844e7
     }
 }
