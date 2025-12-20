@@ -16,23 +16,13 @@ Key Features:
 Architecture Overview:
 
 src/
- ├── VestingVault.sol        # Core vesting logic
+ ├── VestingVault.sol        
  └── mocks/
-     ├── FeeToken.sol        # ERC20 token with fee logic
+     ├── FeeToken.sol        
      └── ReentrantAttacker.sol
 
 test/
  └── VestingVault.t.sol      # Full test suite
-
-src/
- ├── VestingVault.sol        # Core vesting logic
- └── mocks/
-     ├── FeeToken.sol        # ERC20 token with fee logic
-     └── ReentrantAttacker.sol
-
-test/
- └── VestingVault.t.sol      # Full test suite
-
 
 
  
