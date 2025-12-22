@@ -21,34 +21,15 @@ contract VestingVaultTest is Test {
             50 // 0.5% fee
         );
 
-        // Fund vault
         token.transfer(address(vault), 100_000 ether);
     }
 
-    /// ----------------------------
-    /// TEST 1: Cliff blocks claim
-    /// ----------------------------
-
-        vault = new VestingVault(
-            IERC20(address(token)),
-            treasury,
-            50 // 0.5%
-        );
-
-        token.transfer(address(vault), 100_000 ether);
-    }
-
->>>>>>> 70163e4fbe84d4ecb2ccd910f854fd43327844e7
     function testCliffBlocksClaim() public {
-        uint64 start = uint64(block.timestamp);
-        uint64 cliff = 10;
-        uint64 duration = 100;
-
         vault.createSchedule(
             beneficiary,
-            start,
-            cliff,
-            duration,
+            uint64(block.timestamp),
+            10,
+            100,
             10_000 ether,
             true
         );
@@ -57,22 +38,12 @@ contract VestingVaultTest is Test {
         vault.claim(beneficiary, 0);
     }
 
-<<<<<<< HEAD
-    /// ----------------------------
-    /// TEST 2: Claim works after cliff
-    /// ----------------------------
-=======
->>>>>>> 70163e4fbe84d4ecb2ccd910f854fd43327844e7
     function testClaimAfterCliff() public {
-        uint64 start = uint64(block.timestamp);
-        uint64 cliff = 10;
-        uint64 duration = 100;
-
         vault.createSchedule(
             beneficiary,
-            start,
-            cliff,
-            duration,
+            uint64(block.timestamp),
+            10,
+            100,
             10_000 ether,
             true
         );
@@ -86,19 +57,12 @@ contract VestingVaultTest is Test {
         assertGt(afterBal, beforeBal);
     }
 
-    /// ----------------------------
-    /// TEST 3: Pause blocks claims
-    /// ----------------------------
     function testPauseBlocksClaims() public {
-        uint64 start = uint64(block.timestamp);
-        uint64 cliff = 10;
-        uint64 duration = 100;
-
         vault.createSchedule(
             beneficiary,
-            start,
-            cliff,
-            duration,
+            uint64(block.timestamp),
+            10,
+            100,
             10_000 ether,
             true
         );
@@ -109,44 +73,28 @@ contract VestingVaultTest is Test {
         vault.claim(beneficiary, 0);
     }
 
-    /// ----------------------------
-    /// TEST 4: Full vesting releases all tokens
-    /// ----------------------------
     function testFullVestingReleasesAll() public {
-        uint64 start = uint64(block.timestamp);
-        uint64 cliff = 10;
-        uint64 duration = 100;
-
         vault.createSchedule(
             beneficiary,
-            start,
-            cliff,
-            duration,
+            uint64(block.timestamp),
+            10,
+            100,
             10_000 ether,
             true
         );
 
         vm.warp(block.timestamp + 200);
-
         vault.claim(beneficiary, 0);
 
-        uint256 balance = token.balanceOf(beneficiary);
-        assertGt(balance, 9_000 ether); // after fee
+        assertGt(token.balanceOf(beneficiary), 9_000 ether);
     }
 
-    /// ----------------------------
-    /// TEST 5: Revoked schedule blocks claims
-    /// ----------------------------
     function testRevokeBlocksClaim() public {
-        uint64 start = uint64(block.timestamp);
-        uint64 cliff = 10;
-        uint64 duration = 100;
-
         vault.createSchedule(
             beneficiary,
-            start,
-            cliff,
-            duration,
+            uint64(block.timestamp),
+            10,
+            100,
             10_000 ether,
             true
         );
@@ -157,32 +105,22 @@ contract VestingVaultTest is Test {
         vault.claim(beneficiary, 0);
     }
 
-    /// ----------------------------
-    /// TEST 6: Fee is sent to treasury
-    /// ----------------------------
     function testFeeSentToTreasury() public {
-        uint64 start = uint64(block.timestamp);
-        uint64 cliff = 10;
-        uint64 duration = 100;
-
         vault.createSchedule(
             beneficiary,
-            start,
-            cliff,
-            duration,
+            uint64(block.timestamp),
+            10,
+            100,
             10_000 ether,
             true
         );
 
         vm.warp(block.timestamp + 200);
 
-        uint256 treasuryBefore = token.balanceOf(treasury);
+        uint256 beforeFee = token.balanceOf(treasury);
         vault.claim(beneficiary, 0);
-        uint256 treasuryAfter = token.balanceOf(treasury);
+        uint256 afterFee = token.balanceOf(treasury);
 
-        assertGt(treasuryAfter, treasuryBefore);
-=======
-        vault.claim(beneficiary, 0);
->>>>>>> 70163e4fbe84d4ecb2ccd910f854fd43327844e7
+        assertGt(afterFee, beforeFee);
     }
 }
